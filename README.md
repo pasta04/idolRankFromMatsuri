@@ -15,7 +15,7 @@ npm start
 `src/index.ts`
 
 ## 取得するアイドルを変える
-`IDOL_ID` を好きなアイドルのIDに修正して実行すればOK。
+`IDOL_ID_LIST` を好きなアイドルのIDに修正して実行すればOK。
 
 ## 取得するランキングを変える
 `GET_RANK_LIST`を取得したい順位にすればOK。
