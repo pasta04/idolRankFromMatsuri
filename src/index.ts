@@ -1,13 +1,15 @@
 import * as request from 'request-promise';
 import * as fs from 'fs-extra';
 
+/** イベントID 44:1周年 92:2周年 */
+const EVENT_ID = 44;
 // まつり
-const API_BASE = 'https://api.matsurihi.me/mltd/v1/events/92/rankings/logs/idolPoint';
-// 取得するランキング。1度に10個まで。
-const GET_RANK_LIST = ['1,2,3,4,5', '10,20,30,40,50,60,70,80,90', '100,150,200,250,300,350,400,450,500,550', '600,650,700,750,800,850,900,950,1000,2000'];
+const API_BASE = `https://api.matsurihi.me/mltd/v1/events/${EVENT_ID}/rankings/logs/idolPoint`;
+// 取得するランキング
+const GET_RANK_LIST = '1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,100,200,300,400,500,600,700,800,900,1000,1100,1200';
 
 // 35:ひなた 40:たまき 44:瑞希 49:桃子 52:歌織
-const IDOL_ID_LIST: number[] = [35, 40];
+const IDOL_ID_LIST: number[] = [40];
 
 type MatsuriApiEventsRankingIdolPoint = {
   rank: number;
@@ -50,12 +52,27 @@ export const converDateToStr = (date: Date): string => {
  */
 const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
 
+// 10個ずつに分割する
+const split = GET_RANK_LIST.split(',');
+const rankArray: string[] = [];
+let tmp = '';
+let count = 0;
+for (const rank of split) {
+  tmp += `${rank},`;
+  count++;
+  if (count === 10) {
+    rankArray.push(tmp);
+    tmp = '';
+    count = 0;
+  }
+}
+
 (async () => {
   for (const idolId of IDOL_ID_LIST) {
-    const SAVE_FILE_NAME = `idol_${idolId}.csv`;
+    const SAVE_FILE_NAME = `event_${EVENT_ID}_idol_${idolId}.csv`;
 
     const rankList: MatsuriApiEventsRankingIdolPoint = [];
-    for (const rank of GET_RANK_LIST) {
+    for (const rank of rankArray) {
       const options: request.Options = {
         uri: `${API_BASE}/${idolId}/${rank}`,
         json: true
@@ -77,6 +94,7 @@ const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec)
     // ヘッダ
     data += '時刻,';
     rankList.map(rank => (data += `${rank.rank},`));
+    data += '\n';
 
     // データ
     for (const time of timeList) {
