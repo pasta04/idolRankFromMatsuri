@@ -1,7 +1,7 @@
 export type Config = {
   /** イベントID */
   eventId: number;
-  /** 取得対象のアイドルID */
+  /** 取得対象、およびマージ対象のアイドルID */
   idolList: number[];
   /** ボーダーデータの取得に関する設定 */
   get: {

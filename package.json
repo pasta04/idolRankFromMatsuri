@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "get": "ts-node src/index.ts",
     "merge": "ts-node src/merge.ts"
   },
   "author": "",
