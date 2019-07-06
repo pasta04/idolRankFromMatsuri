@@ -12,17 +12,17 @@ const FILE_NAME_SUFFIX = '.json';
 
 const SAVE_FILE_NAME = `data/event_${config.eventId}_mergeRank_${config.merge.targetRank}.csv`;
 
-// const idolList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
-const idolList = [35, 40];
-
 (async () => {
+  console.log('マージ開始');
+
   // 全アイドルのデータを読み込む
   const allIdolData: {
     id: number;
     name: string;
     data: MatsuriApiEventsRankingIdolPoint;
   }[] = [];
-  for (const idolId of idolList) {
+
+  for (const idolId of config.idolList) {
     const idolname = idolListMap[idolId];
     const filename = `${FILE_NAME_PREFIX}${idolId}_${idolname}${FILE_NAME_SUFFIX}`;
     if (!(await isFileExist(filename))) {
@@ -65,4 +65,5 @@ const idolList = [35, 40];
     data += '\n';
   }
   await writeTextFile(SAVE_FILE_NAME, data);
+  console.log('マージ完了');
 })();

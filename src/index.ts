@@ -27,10 +27,14 @@ if (tmp !== '') {
 }
 
 (async () => {
+  console.log('データ取得開始');
+
   for (const idolId of config.idolList) {
     const idolName = idolListMap[idolId];
     const SAVE_FILE_NAME_CSV = `data/event_${config.eventId}_idol_${idolId}_${idolName}.csv`;
     const SAVE_FILE_NAME_JSON = `data/tmp/event_${config.eventId}_idol_${idolId}_${idolName}.json`;
+
+    console.log(`${idolId}: ${idolName}`);
 
     const rankList: MatsuriApiEventsRankingIdolPoint = [];
     for (const rank of rankArray) {
@@ -70,4 +74,5 @@ if (tmp !== '') {
 
     await writeTextFile(SAVE_FILE_NAME_CSV, data);
   }
+  console.log('データ取得完了');
 })();
