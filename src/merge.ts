@@ -64,5 +64,5 @@ const idolList = [35, 40];
     }
     data += '\n';
   }
-  writeTextFile(SAVE_FILE_NAME, data);
+  await writeTextFile(SAVE_FILE_NAME, data);
 })();

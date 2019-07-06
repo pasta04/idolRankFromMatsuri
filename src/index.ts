@@ -47,7 +47,7 @@ if (tmp !== '') {
         console.error(e);
       }
     }
-    writeTextFile(SAVE_FILE_NAME_JSON, JSON.stringify(rankList, null, '  '));
+    await writeTextFile(SAVE_FILE_NAME_JSON, JSON.stringify(rankList, null, '  '));
 
     // 時刻基準で集計する
     const timeList = rankList[0].data.map(item => item.summaryTime);
@@ -68,6 +68,6 @@ if (tmp !== '') {
       data += '\n';
     }
 
-    writeTextFile(SAVE_FILE_NAME_CSV, data);
+    await writeTextFile(SAVE_FILE_NAME_CSV, data);
   }
 })();
