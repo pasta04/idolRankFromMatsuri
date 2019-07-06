@@ -6,7 +6,9 @@ const EVENT_ID = 92;
 // まつり
 const API_BASE = `https://api.matsurihi.me/mltd/v1/events/${EVENT_ID}/rankings/logs/idolPoint`;
 // 取得するランキング
-const GET_RANK_LIST = '40,45,50,60,70,80,100,200';
+const GET_RANK_LIST = '1,2,3,4,5,6,7,8,9,10,40,45,50,60,70,80,100,200,500,1000';
+
+const idolListMap = require('./idolList.json') as { [id: string]: string };
 
 // 35:ひなた 40:たまき 44:瑞希 49:桃子 52:歌織
 const IDOL_ID_LIST: number[] = [35];
@@ -73,7 +75,8 @@ if (tmp !== '') {
 
 (async () => {
   for (const idolId of IDOL_ID_LIST) {
-    const SAVE_FILE_NAME = `event_${EVENT_ID}_idol_${idolId}.csv`;
+    const idolName = idolListMap[idolId];
+    const SAVE_FILE_NAME = `event_${EVENT_ID}_idol_${idolId}_${idolName}.csv`;
 
     const rankList: MatsuriApiEventsRankingIdolPoint = [];
     for (const rank of rankArray) {
