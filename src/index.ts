@@ -2,14 +2,14 @@ import * as request from 'request-promise';
 import * as fs from 'fs-extra';
 
 /** イベントID 44:1周年 92:2周年 */
-const EVENT_ID = 44;
+const EVENT_ID = 92;
 // まつり
 const API_BASE = `https://api.matsurihi.me/mltd/v1/events/${EVENT_ID}/rankings/logs/idolPoint`;
 // 取得するランキング
-const GET_RANK_LIST = '1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,100,200,300,400,500,600,700,800,900,1000,1100,1200';
+const GET_RANK_LIST = '40,45,50,60,70,80,100,200';
 
 // 35:ひなた 40:たまき 44:瑞希 49:桃子 52:歌織
-const IDOL_ID_LIST: number[] = [40];
+const IDOL_ID_LIST: number[] = [35];
 
 type MatsuriApiEventsRankingIdolPoint = {
   rank: number;
@@ -65,6 +65,10 @@ for (const rank of split) {
     tmp = '';
     count = 0;
   }
+}
+// 余り
+if (tmp !== '') {
+  rankArray.push(tmp);
 }
 
 (async () => {
