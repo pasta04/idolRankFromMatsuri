@@ -1,61 +1,14 @@
 import * as request from 'request-promise';
-import * as fs from 'fs-extra';
-
-/** イベントID 44:1周年 92:2周年 */
-const EVENT_ID = 92;
-// まつり
-const API_BASE = `https://api.matsurihi.me/mltd/v1/events/${EVENT_ID}/rankings/logs/idolPoint`;
-// 取得するランキング
-const GET_RANK_LIST = '1,2,3,4,5,6,7,8,9,10,40,45,50,60,70,80,100,200,500,1000';
-
+import { sleep, converDateToStr, writeTextFile } from './util';
+import { Config, MatsuriApiEventsRankingIdolPoint } from './types';
+const config = require('./config.json') as Config;
 const idolListMap = require('./idolList.json') as { [id: string]: string };
 
-// 35:ひなた 40:たまき 44:瑞希 49:桃子 52:歌織
-const IDOL_ID_LIST: number[] = [35];
-
-type MatsuriApiEventsRankingIdolPoint = {
-  rank: number;
-  data: {
-    score: number;
-    summaryTime: string;
-  }[];
-}[];
-
-/**
- * テキストファイルに上書き保存
- * @param filepath ファイルパス
- * @param dataStr 文字
- */
-const writeTextFile = async (filepath: string, dataStr: string) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filepath, dataStr, err => {
-      if (err) reject(err);
-      resolve();
-    });
-  });
-};
-
-/**
- * Dateオブジェクトを、YYYY/MM/DD HH:MM形式にする
- * @param date
- */
-export const converDateToStr = (date: Date): string => {
-  const year = `0000${date.getFullYear()}`.slice(-4);
-  const month = `00${date.getMonth() + 1}`.slice(-2);
-  const day = `00${date.getDate()}`.slice(-2);
-  const hour = `00${date.getHours()}`.slice(-2);
-  const minute = `00${date.getMinutes()}`.slice(-2);
-  return `${year}/${month}/${day} ${hour}:${minute}`;
-};
-
-/**
- * スリープ
- * @param msec
- */
-const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec));
+// まつり
+const API_BASE = `https://api.matsurihi.me/mltd/v1/events/${config.eventId}/rankings/logs/idolPoint`;
 
 // 10個ずつに分割する
-const split = GET_RANK_LIST.split(',');
+const split = config.get.rankList.split(',');
 const rankArray: string[] = [];
 let tmp = '';
 let count = 0;
@@ -74,9 +27,10 @@ if (tmp !== '') {
 }
 
 (async () => {
-  for (const idolId of IDOL_ID_LIST) {
+  for (const idolId of config.idolList) {
     const idolName = idolListMap[idolId];
-    const SAVE_FILE_NAME = `event_${EVENT_ID}_idol_${idolId}_${idolName}.csv`;
+    const SAVE_FILE_NAME_CSV = `data/event_${config.eventId}_idol_${idolId}_${idolName}.csv`;
+    const SAVE_FILE_NAME_JSON = `data/tmp/event_${config.eventId}_idol_${idolId}_${idolName}.json`;
 
     const rankList: MatsuriApiEventsRankingIdolPoint = [];
     for (const rank of rankArray) {
@@ -93,6 +47,7 @@ if (tmp !== '') {
         console.error(e);
       }
     }
+    writeTextFile(SAVE_FILE_NAME_JSON, JSON.stringify(rankList, null, '  '));
 
     // 時刻基準で集計する
     const timeList = rankList[0].data.map(item => item.summaryTime);
@@ -113,6 +68,6 @@ if (tmp !== '') {
       data += '\n';
     }
 
-    writeTextFile(SAVE_FILE_NAME, data);
+    writeTextFile(SAVE_FILE_NAME_CSV, data);
   }
 })();
